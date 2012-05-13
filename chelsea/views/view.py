@@ -14,14 +14,15 @@ class CView(View):
     ################################################################
 
     def get_view(self, request, *args, **kwargs):
+        """Determines and returns the view needed for the 
+        given request."""
+
         if request.method.lower() in self.http_method_names:
             handler = getattr(self, request.method.lower(), 
                 self.http_method_not_allowed)
         else:
             handler = self.http_method_not_allowed
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+
         return handler
 
     def dispatch(self, request, *args, **kwargs):
@@ -53,7 +54,9 @@ class CView(View):
         #     if type(self.user_in_group) in [str, unicode]:
         #         self.user_in_group = [self.user_in_group]
 
-
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
         return view(request, *args, **kwargs)
 
     ################################################################

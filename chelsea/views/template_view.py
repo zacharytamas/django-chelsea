@@ -70,7 +70,8 @@ class CTemplateView(CView):
             if self.template_name is not None:
                 template_name = self.template_name
             else:
-                raise Exception('ZView: No configured template_name to render.')
+                raise Exception('CView: No configured template_name'
+                    ' to render.')
 
         if context is None:
             context = self.context()
