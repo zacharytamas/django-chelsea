@@ -1,0 +1,2 @@
+
+from .views.tests import *

@@ -1,3 +1,5 @@
+import sys
+
 from django.http import HttpResponse
 from django.shortcuts import render_to_response as django_render_to_response
 from django.template import RequestContext
@@ -16,7 +18,7 @@ class CTemplateView(CView):
 
         # Automatically add the request object to the
         # template context.
-        self.context_add('request', request)
+        self.context_add('request')
 
         response = super(CTemplateView, self).dispatch(request, *args, **kwargs)
 
@@ -34,12 +36,30 @@ class CTemplateView(CView):
 
     template_context = {}
 
-    def context(self):
-        return self.template_context
+    def context(self, key=None):
+        if key is None:
+            return self.template_context
+        else:
+            return self.template_context[key]
 
-    def context_add(self, key, value):
-        """Given a key and a value, adds it to the template context."""
-        self.template_context[key] = value
+    def context_add(self, *args, **kwargs):
+        """Adds variables to the template context."""
+
+        if len(args):
+            # TODO insert test for frame support
+            caller_context = sys._getframe(1).f_locals
+            for arg in args:
+                if type(arg) in [str, unicode]:
+                    try:
+                        self.template_context[arg] = caller_context[arg]
+                    except:
+                        raise Exception('CTemplateView: "%s" variable not found in view context.' % arg)
+                else:
+                    raise Exception('CTemplateView: Could not map template context variables.')
+
+        if len(kwargs):
+            for k,v in kwargs.iteritems():
+                self.template_context[k] = v
 
     def context_remove(self, key):
         if key in self.template_context:
@@ -50,7 +70,11 @@ class CTemplateView(CView):
 
     def context_update(self, key, value):
         """Given a key and value, update the context."""
-        # TODO Implement.
+        if key in self.template_context:
+          self.template_context[key] = value
+          return True
+        else:
+          return False
 
     def context_integrate(self, dictionary):
         """Given a dictionary, integrates it into the 
@@ -84,7 +108,9 @@ class CTemplateView(CView):
 
     render = render_to_response  # a shortcut
 
-    # The default GET behavior is to just render the template
-    # without doing any specific logic.
     def get(self, request, *args, **kwargs):
+        """The default GET behavior is to just render the
+        template without doing any specific logic."""
         pass
+    
+    post = get  # by default POST hits run the GET method

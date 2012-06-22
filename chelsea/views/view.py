@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import View
+from django.contrib import messages
 
 class CView(View):
     """A Chelsea View."""
@@ -32,15 +34,12 @@ class CView(View):
 
         # "Requires login" functionality.
         # TODO rewrite?
-        if self.login_required is not False:
-            if self.login_required is True:
-                view = login_required(view)
-            elif isinstance(self.login_required, list):
+        if self.login_required is True:
+            view = login_required(view)
+        else:
+            if isinstance(self.login_required, list):
                 if request.method.lower() in self.login_required:
                     view = login_required(view)
-
-        if request.method.lower() in self.login_required:
-            view = login_required(view)
 
         # If there is a specified test method, test the
         # user against the method.
@@ -58,12 +57,16 @@ class CView(View):
         self.args = args
         self.kwargs = kwargs
         return view(request, *args, **kwargs)
+    
+    def get(self, request, *args, **kwargs):
+        """docstring for get"""
+        return HttpResponse()
 
     ################################################################
     # Response returns
     ################################################################
 
-    def redirectTo(self, to, *args, **kwargs):
+    def redirect_to(self, to, *args, **kwargs):
         """Returns a redirect to the given URL."""
 
         response = redirect(to, *args, **kwargs)
@@ -74,3 +77,23 @@ class CView(View):
             raise response
         else:
             return response
+
+    ################################################################
+    # Messages framework
+    ################################################################
+
+    def msg_debug(self, msg):
+        messages.debug(self.request, msg)
+
+    def msg_info(self, msg):
+        messages.info(self.request, msg)
+
+    def msg_success(self, msg):
+        messages.success(self.request, msg)
+
+    def msg_warning(self, msg):
+        messages.warning(self.request, msg)
+    
+    def msg_error(self, msg):
+        messages.error(self.request, msg)
+
