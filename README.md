@@ -142,6 +142,8 @@ Without Chelsea:
 Now with Chelsea:
 
     from django.contrib.auth.models import User
+    from django.template.defaultfilters import slugify
+    
     from chelsea.views import CFormView
     
     from myproject.apps.plugins.forms import ReleaseForm
@@ -169,5 +171,5 @@ Now with Chelsea:
             release.slug = slugify(release.name)
             form.save()
             self.msg_success("Successfully created your release.")
-            self.redirect_to("plugin_detail", args=[plugin.slug])
+            self.redirect_to("plugin_detail", args=[self.plugin.slug])
         
