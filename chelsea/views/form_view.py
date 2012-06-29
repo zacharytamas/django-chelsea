@@ -17,8 +17,6 @@ class CFormView(CTemplateView):
         self.form_will_be_created()
         form = self.create_form()
         self.form_was_created(form)
-
-        self.view_will_render()
         self.context_add(form=form)
 
     def post(self, request, *args, **kwargs):
@@ -35,7 +33,6 @@ class CFormView(CTemplateView):
         else:
             self.form_was_invalid(form)
 
-        self.view_will_render()
         self.context_add(form=form)
 
     def create_form(self, *args, **kwargs):
