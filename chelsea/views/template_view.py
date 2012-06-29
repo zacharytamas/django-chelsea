@@ -82,6 +82,15 @@ class CTemplateView(CView):
         # TODO Implement.
 
     ################################################################
+    # Cocoa-style Events to be overriden to specify functionality.
+    ################################################################
+
+    def view_will_render(self):
+        """Called directly before the view renders. Last 
+        chance to change the template context."""
+        pass
+
+    ################################################################
     # Template rendering methods
     ################################################################
 
@@ -89,6 +98,8 @@ class CTemplateView(CView):
 
     def render_to_response(self, context=None, template_name=None):
         """Renders a response using the current tempalte context."""
+
+        self.view_will_render()
 
         if template_name is None:
             if self.template_name is not None:
@@ -100,11 +111,8 @@ class CTemplateView(CView):
         if context is None:
             context = self.context()
 
-        if 'request' in context:
-            return django_render_to_response(template_name, context,
-                context_instance=RequestContext(context['request']))
-        else:
-            return django_render_to_response(template_name, context)
+        return django_render_to_response(template_name, context,
+            context_instance=RequestContext(self.request))
 
     render = render_to_response  # a shortcut
 

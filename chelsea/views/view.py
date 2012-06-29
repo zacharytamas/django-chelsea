@@ -10,6 +10,7 @@ class CView(View):
     login_required = False
     user_passes_test = None
     user_in_group = None
+    automaps = None
 
     ################################################################
     # Low-level view dispatching
@@ -29,6 +30,15 @@ class CView(View):
 
     def dispatch(self, request, *args, **kwargs):
         """Handles the dispatching of view requests."""
+
+        self.method = request.method.lower()
+
+        if self.automaps:
+            for key, value in kwargs:
+                key_pieces = key.rsplit("_", 1)
+                if key_pieces[0] in self.automaps:
+                    if key_pieces[1] == "id":
+                        kwargs[key_pieces[0]] = self.automaps[key_pieces[0]].objects.get(id=value)
 
         view = self.get_view(request, *args, **kwargs)
 

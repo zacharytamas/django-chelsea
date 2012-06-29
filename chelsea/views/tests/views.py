@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from chelsea.views import CView
 from chelsea.views import CTemplateView
 
@@ -8,6 +10,12 @@ from chelsea.views import CTemplateView
 class TestCViewLoginRequired(CView):
     """Tests the login required views."""
     login_required = True
+
+class TestCViewAutoMaps(CView):
+    """"""
+    automaps = {'user': User}
+    def get(self, request, user):
+        print user.username
 
 ################################################################
 # CTemplateView

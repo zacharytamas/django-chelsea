@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from chelsea.views import (CView, CTemplateView)
 from chelsea.testing import CTestCase
+from chelsea.views.tests.views import TestCViewAutoMaps
 
 class CViewTestCases(CTestCase):
     """Tests for the CView class."""

@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     
     url(r'^cview/test_login_required/$', TestCViewLoginRequired.as_view(),
         name='cview/test-login-required'),
+    url(r'^cview/test_automaps/(?P<user_id>)/$', TestCViewAutoMaps.as_view(),
+        name='cview/test-automaps'),
     
     # CTemplateView views
     
